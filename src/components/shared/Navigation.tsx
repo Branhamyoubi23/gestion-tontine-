@@ -13,7 +13,10 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  HelpCircle,
+  History,
+  UserPlus
 } from 'lucide-react';
 
 const Navigation = () => {
@@ -25,7 +28,11 @@ const Navigation = () => {
     { icon: Home, label: 'Tableau de bord', path: '/dashboard' },
     { icon: Plus, label: 'Créer tontine', path: '/create-tontine' },
     { icon: Wallet, label: 'Paiements', path: '/payment' },
+    { icon: History, label: 'Historique', path: '/history' },
+    { icon: UserPlus, label: 'Invitations', path: '/invitations' },
     { icon: Bell, label: 'Notifications', path: '/notifications' },
+    { icon: HelpCircle, label: 'Aide', path: '/help' },
+    { icon: Settings, label: 'Paramètres', path: '/settings' },
     { icon: User, label: 'Profil', path: '/profile' },
   ];
 
@@ -51,7 +58,7 @@ const Navigation = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            {menuItems.map((item) => (
+            {menuItems.slice(0, 6).map((item) => (
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}

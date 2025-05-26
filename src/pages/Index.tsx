@@ -12,6 +12,10 @@ import PaymentPage from '@/components/payment/PaymentPage';
 import NotificationsPage from '@/components/notifications/NotificationsPage';
 import LandingPage from '@/components/landing/LandingPage';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
+import HelpPage from '@/components/help/HelpPage';
+import SettingsPage from '@/components/settings/SettingsPage';
+import TransactionHistory from '@/components/history/TransactionHistory';
+import InvitationsPage from '@/components/invitations/InvitationsPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -81,6 +85,38 @@ const AppRouter = () => {
         element={
           <ProtectedRoute>
             <NotificationsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/help"
+        element={
+          <ProtectedRoute>
+            <HelpPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <SettingsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <TransactionHistory />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/invitations"
+        element={
+          <ProtectedRoute>
+            <InvitationsPage />
           </ProtectedRoute>
         }
       />
