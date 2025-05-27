@@ -61,7 +61,7 @@ const TontineDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="p-6 text-center">
               <DollarSign className="h-8 w-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{tontine.amount}€</div>
+              <div className="text-2xl font-bold text-gray-900">{tontine.amount}CFA</div>
               <div className="text-sm text-gray-600">Par contribution</div>
             </Card>
             

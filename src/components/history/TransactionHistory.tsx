@@ -155,7 +155,7 @@ const TransactionHistory = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total contributions</p>
-                  <p className="text-2xl font-bold text-red-600">-550 €</p>
+                  <p className="text-2xl font-bold text-red-600">-550 CFA</p>
                 </div>
                 <ArrowUpRight className="h-8 w-8 text-red-600" />
               </div>
@@ -164,7 +164,7 @@ const TransactionHistory = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total reçu</p>
-                  <p className="text-2xl font-bold text-green-600">+1,600 €</p>
+                  <p className="text-2xl font-bold text-green-600">+1,600 CFA</p>
                 </div>
                 <ArrowDownLeft className="h-8 w-8 text-green-600" />
               </div>
@@ -173,7 +173,7 @@ const TransactionHistory = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Solde net</p>
-                  <p className="text-2xl font-bold text-green-600">+1,050 €</p>
+                  <p className="text-2xl font-bold text-green-600">+1,050 CFA</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
@@ -206,7 +206,7 @@ const TransactionHistory = () => {
                     <div className={`text-lg font-semibold ${
                       transaction.amount > 0 ? 'text-green-600' : 'text-red-600'
                     }`}>
-                      {transaction.amount > 0 ? '+' : ''}{transaction.amount} €
+                      {transaction.amount > 0 ? '+' : ''}{transaction.amount} CFA
                     </div>
                     <div className="flex items-center justify-end space-x-2 mt-1">
                       {getStatusIcon(transaction.status)}

@@ -77,7 +77,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm text-gray-600">Total épargné</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats.totalContributions.toLocaleString()} €
+                  {stats.totalContributions.toLocaleString()} CFA
                 </p>
               </div>
               <Wallet className="h-8 w-8 text-blue-600" />
@@ -99,7 +99,7 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm text-gray-600">Prochaine réception</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats.nextReceiving.toLocaleString()} €
+                  {stats.nextReceiving.toLocaleString()} CFA
                 </p>
               </div>
               <TrendingUp className="h-8 w-8 text-blue-600" />
@@ -165,11 +165,13 @@ const Dashboard = () => {
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
                       <p className="text-gray-600">Pot total</p>
-                      <p className="font-semibold">{tontine.totalAmount.toLocaleString()} €</p>
+                      <p className="font-semibold">{tontine.totalAmount.toLocaleString()} CFA</p>
                     </div>
                     <div>
                       <p className="text-gray-600">Ma contribution</p>
-                      <p className="font-semibold">{tontine.myContribution.toLocaleString()} €</p>
+                      <p className="font-semibold">{tontine.myContribution.toLocaleString()} CFA
+
+                      </p>
                     </div>
                     <div>
                       <p className="text-gray-600">Prochain paiement</p>
