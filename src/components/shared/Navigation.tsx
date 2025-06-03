@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -73,15 +72,9 @@ const Navigation = () => {
           {/* User Menu */}
           <div className="flex items-center space-x-4">
             {/* Notifications Badge */}
-            <button 
-              onClick={() => navigate('/notifications')}
-              className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                3
-              </span>
-            </button>
+            {/* <button>
+              <Bell className="..." />
+            </button> */}
 
             {/* User Avatar */}
             <div className="flex items-center space-x-2">

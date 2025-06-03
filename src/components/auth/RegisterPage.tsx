@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -83,16 +82,16 @@ const RegisterPage = () => {
             </div>
 
             <div>
-              <Label htmlFor="email">Adresse e-mail</Label>
+              <Label htmlFor="email">Adresse e-mail  (Optionnel) </Label>
               <div className="relative mt-1">
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => updateFormData('email', e.target.value)}
-                  placeholder="votre@email.com"
+                  placeholder="exemple@gmail.com"
                   className="pl-10"
-                  required
+                  
                 />
                 <Mail className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
               </div>
@@ -106,7 +105,7 @@ const RegisterPage = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => updateFormData('phone', e.target.value)}
-                  placeholder="+33 6 12 34 56 78"
+                  placeholder="+237 6********"
                   className="pl-10"
                   required
                 />

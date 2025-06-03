@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navigation from '@/components/shared/Navigation';
-import { Bell, Check, Trash2, DollarSign, Users, Calendar, Settings } from 'lucide-react';
+import { Bell, Check, Trash2, DollarSign, Users, Calendar } from 'lucide-react';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([
@@ -88,10 +87,6 @@ const NotificationsPage = () => {
                   Tout marquer comme lu
                 </Button>
               )}
-              <Button variant="outline">
-                <Settings className="h-4 w-4 mr-2" />
-                Paramètres
-              </Button>
             </div>
           </div>
 

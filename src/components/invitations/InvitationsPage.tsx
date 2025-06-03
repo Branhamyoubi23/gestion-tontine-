@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -7,8 +6,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import Navigation from '@/components/shared/Navigation';
 import { UserPlus, Send, Copy, Share2, Check, Clock, X, Mail, MessageSquare } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const InvitationsPage = () => {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const tontineIdFromUrl = params.get('tontineId');
+
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteMessage, setInviteMessage] = useState('');
   const [selectedTontine, setSelectedTontine] = useState('1');
@@ -91,9 +95,14 @@ const InvitationsPage = () => {
     }
   };
 
+  // Use tontineIdFromUrl if present, otherwise fallback to selectedTontine
+  const invitationTontineId = tontineIdFromUrl || selectedTontine;
+
+  const invitationLink = `https://tontinehub.com/invite/${invitationTontineId}`;
+
+  // Update copyInviteLink to use invitationLink
   const copyInviteLink = () => {
-    const link = `https://tontinehub.com/invite/${selectedTontine}`;
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(invitationLink);
   };
 
   return (
@@ -173,6 +182,7 @@ const InvitationsPage = () => {
                     <Copy className="h-4 w-4 mr-2" />
                     Copier le lien d'invitation
                   </Button>
+                  <div className="text-xs text-gray-500 break-all">{invitationLink}</div>
                   <Button variant="outline" className="w-full justify-start">
                     <MessageSquare className="h-4 w-4 mr-2" />
                     Partager par SMS

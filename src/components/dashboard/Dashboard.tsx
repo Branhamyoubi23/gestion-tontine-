@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -10,44 +9,15 @@ import { Plus, Users, Wallet, Clock, TrendingUp } from 'lucide-react';
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
-  // Mock data
-  const [tontines] = useState([
-    {
-      id: '1',
-      name: 'Épargne Famille',
-      type: 'sequential',
-      members: 8,
-      totalAmount: 4000,
-      myContribution: 500,
-      nextPayment: '2024-01-15',
-      status: 'active',
-      isAdmin: true
-    },
-    {
-      id: '2',
-      name: 'Projet Vacances',
-      type: 'random',
-      members: 12,
-      totalAmount: 6000,
-      myContribution: 500,
-      nextPayment: '2024-01-20',
-      status: 'active',
-      isAdmin: false
-    },
-    {
-      id: '3',
-      name: 'Investissement Pro',
-      type: 'sequential',
-      members: 6,
-      totalAmount: 12000,
-      myContribution: 2000,
-      nextPayment: '2024-01-25',
-      status: 'pending',
-      isAdmin: false
-    }
-  ]);
 
+  // Load tontines from localStorage
+  const [tontines, setTontines] = useState([]);
+
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('tontines') || '[]');
+    setTontines(stored);
+  }, []);
+  
   const stats = {
     totalContributions: 3000,
     activeTontines: tontines.filter(t => t.status === 'active').length,
@@ -70,49 +40,31 @@ const Dashboard = () => {
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Custom Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Total épargné</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.totalContributions.toLocaleString()} CFA
-                </p>
-              </div>
-              <Wallet className="h-8 w-8 text-blue-600" />
-            </div>
-          </Card>
-          
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tontines actives</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.activeTontines}</p>
+                <p className="text-sm text-gray-600">Nombre total de tontines</p>
+                <p className="text-2xl font-bold text-gray-900">{tontines.length}</p>
               </div>
               <Users className="h-8 w-8 text-green-600" />
             </div>
           </Card>
-          
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">Prochaine réception</p>
+                <p className="text-sm text-gray-600">Solde total dans les tontines</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {stats.nextReceiving.toLocaleString()} CFA
+                  {
+                    tontines.reduce(
+                      (sum, t) => sum + (parseFloat(t.amount || 0) * (parseInt(t.maxMembers || 0) || 0)),
+                      0
+                    ).toLocaleString()
+                  } FCFA
                 </p>
               </div>
-              <TrendingUp className="h-8 w-8 text-blue-600" />
-            </div>
-          </Card>
-          
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Tours complétés</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.completedRounds}</p>
-              </div>
-              <Clock className="h-8 w-8 text-green-600" />
+              <Wallet className="h-8 w-8 text-blue-600" />
             </div>
           </Card>
         </div>
@@ -133,6 +85,9 @@ const Dashboard = () => {
             </div>
             
             <div className="space-y-4">
+              {tontines.length === 0 && (
+                <div className="text-gray-500">Aucune tontine pour le moment.</div>
+              )}
               {tontines.map((tontine) => (
                 <Card 
                   key={tontine.id} 
@@ -143,39 +98,24 @@ const Dashboard = () => {
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                         {tontine.name}
-                        {tontine.isAdmin && (
-                          <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                            Admin
-                          </span>
-                        )}
                       </h3>
                       <p className="text-sm text-gray-600 capitalize">
-                        {tontine.type === 'sequential' ? 'Séquentielle' : 'Aléatoire'} • {tontine.members} membres
+                        {tontine.description}
                       </p>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm ${
-                      tontine.status === 'active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {tontine.status === 'active' ? 'Active' : 'En attente'}
-                    </span>
                   </div>
-                  
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-600">Pot total</p>
-                      <p className="font-semibold">{tontine.totalAmount.toLocaleString()} CFA</p>
+                      <p className="text-gray-600">Montant</p>
+                      <p className="font-semibold">{tontine.amount} CFA</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Ma contribution</p>
-                      <p className="font-semibold">{tontine.myContribution.toLocaleString()} CFA
-
-                      </p>
+                      <p className="text-gray-600">Membres max</p>
+                      <p className="font-semibold">{tontine.maxMembers}</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Prochain paiement</p>
-                      <p className="font-semibold">{new Date(tontine.nextPayment).toLocaleDateString('fr-FR')}</p>
+                      <p className="text-gray-600">Durée</p>
+                      <p className="font-semibold">{tontine.duration} mois</p>
                     </div>
                   </div>
                 </Card>

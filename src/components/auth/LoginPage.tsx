@@ -1,14 +1,13 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
-import { Users, Mail, Lock } from 'lucide-react';
+import { Users, Phone , Lock } from 'lucide-react';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [phone, setphone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
@@ -19,7 +18,7 @@ const LoginPage = () => {
     setLoading(true);
     
     try {
-      await login(email, password);
+      await login(phone, password);
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
@@ -44,18 +43,18 @@ const LoginPage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
-              <Label htmlFor="email">Adresse e-mail</Label>
+              <Label htmlFor="phone">Numéro de téléphone</Label>
               <div className="relative mt-1">
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="votre@email.com"
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setphone(e.target.value)}
+                  placeholder="Numéro de téléphone"
                   className="pl-10"
                   required
                 />
-                <Mail className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
+                <Phone className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
               </div>
             </div>
 

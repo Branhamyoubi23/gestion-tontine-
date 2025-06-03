@@ -59,7 +59,7 @@ const PaymentPage = () => {
                     <SelectContent>
                       {tontines.map((tontine) => (
                         <SelectItem key={tontine.id} value={tontine.id}>
-                          {tontine.name} - {tontine.amount}CFA
+                          {tontine.name} - {tontine.amount}FCFA
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -67,10 +67,11 @@ const PaymentPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="amount">Montant (CFA/$)</Label>
+                  <Label htmlFor="amount">Montant (FCFA)</Label>
                   <Input
                     id="amount"
                     type="number"
+                    min={0}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="100"
@@ -131,7 +132,7 @@ const PaymentPage = () => {
                     <Label htmlFor="phoneNumber">Numéro de téléphone</Label>
                     <Input
                       id="phoneNumber"
-                      placeholder="+33 6 12 34 56 78"
+                      placeholder="+237 6 ********"
                     />
                   </div>
                 )}
@@ -172,7 +173,7 @@ const PaymentPage = () => {
                       <div className="text-sm text-gray-600">{payment.date}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium">{payment.amount}CFA</div>
+                      <div className="font-medium">{payment.amount}FCFA</div>
                       <div className="flex items-center text-sm text-green-600">
                         <CheckCircle className="h-4 w-4 mr-1" />
                         Confirmé
@@ -195,7 +196,7 @@ const PaymentPage = () => {
                     <div className="text-sm text-gray-600">Échéance: {tontine.nextPayment}</div>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">{tontine.amount}CFA</div>
+                    <div className="font-medium">{tontine.amount}FCFA</div>
                     <Button size="sm" variant="outline">
                       Payer
                     </Button>
