@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,62 +7,73 @@ import { Textarea } from '@/components/ui/textarea';
 import Navigation from '@/components/shared/Navigation';
 import { UserPlus, Send, Copy, Share2, Check, Clock, X, Mail, MessageSquare } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const InvitationsPage = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const tontineIdFromUrl = params.get('tontineId');
 
+  const [tontines, setTontines] = useState([]);
+  const [selectedTontine, setSelectedTontine] = useState(tontineIdFromUrl || '');
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteMessage, setInviteMessage] = useState('');
-  const [selectedTontine, setSelectedTontine] = useState('1');
+  const [sentInvitations, setSentInvitations] = useState([]);
+  const [userSearch, setUserSearch] = useState('');
+  const [userSuggestions, setUserSuggestions] = useState<{id:number, name:string}[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<{id:number, name:string}[]>([]);
 
-  const sentInvitations = [
-    {
-      id: '1',
-      email: 'marie.dubois@email.com',
-      tontine: 'Tontine des amis',
-      status: 'pending',
-      sentDate: '2024-01-25',
-      expiryDate: '2024-02-05'
-    },
-    {
-      id: '2',
-      email: 'pierre.martin@email.com',
-      tontine: 'Épargne famille',
-      status: 'accepted',
-      sentDate: '2024-01-20',
-      acceptedDate: '2024-01-22'
-    },
-    {
-      id: '3',
-      email: 'sophie.laurent@email.com',
-      tontine: 'Projet Vacances',
-      status: 'declined',
-      sentDate: '2024-01-18',
-      declinedDate: '2024-01-20'
-    },
-    {
-      id: '4',
-      email: 'luc.bernard@email.com',
-      tontine: 'Tontine des amis',
-      status: 'expired',
-      sentDate: '2024-01-10',
-      expiryDate: '2024-01-20'
+  useEffect(() => {
+    fetch(`http://localhost:3000/api/tontines?adminId=${user.id}`)
+      .then(res => res.json())
+      .then(setTontines);
+  }, [user.id]);
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/api/invitations?senderId=${user.id}`)
+      .then(res => res.json())
+      .then(setSentInvitations);
+  }, [user.id]);
+
+  useEffect(() => {
+    if (userSearch.length > 1) {
+      fetch(`http://localhost:3000/api/users?search=${userSearch}`)
+        .then(res => res.json())
+        .then(setUserSuggestions);
+    } else {
+      setUserSuggestions([]);
     }
-  ];
+  }, [userSearch]);
 
-  const tontines = [
-    { id: '1', name: 'Tontine des amis', spots: 2 },
-    { id: '2', name: 'Épargne famille', spots: 1 },
-    { id: '3', name: 'Projet Vacances', spots: 3 }
-  ];
+  // Déclare ces variables UNE SEULE FOIS
+  const invitationTontineId = selectedTontine || tontineIdFromUrl || (tontines[0]?.id ?? '');
+  const invitationLink = `${window.location.origin}/register?invite=${invitationTontineId}`;
 
-  const handleSendInvitation = (e: React.FormEvent) => {
+  const handleSendInvitation = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Sending invitation:', { inviteEmail, inviteMessage, selectedTontine });
-    setInviteEmail('');
+    for (const member of selectedUsers) {
+      await fetch('http://localhost:3000/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: member.id,
+          type: 'invitation',
+          title: 'Invitation à une tontine',
+          message: inviteMessage || `Vous avez été invité à rejoindre la tontine "${tontines.find(t => t.id == invitationTontineId)?.name}"`,
+          date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          read: 0,
+          tontine_id: invitationTontineId
+        }),
+      });
+    }
+    setSelectedUsers([]);
     setInviteMessage('');
+    // Optionnel: afficher un message de succès
+  };
+
+  const copyInviteLink = () => {
+    navigator.clipboard.writeText(invitationLink);
   };
 
   const getStatusIcon = (status: string) => {
@@ -95,20 +106,17 @@ const InvitationsPage = () => {
     }
   };
 
-  // Use tontineIdFromUrl if present, otherwise fallback to selectedTontine
-  const invitationTontineId = tontineIdFromUrl || selectedTontine;
-
-  const invitationLink = `https://tontinehub.com/invite/${invitationTontineId}`;
-
-  // Update copyInviteLink to use invitationLink
-  const copyInviteLink = () => {
-    navigator.clipboard.writeText(invitationLink);
+  const addUser = (u) => {
+    if (!selectedUsers.find(su => su.id === u.id)) {
+      setSelectedUsers([...selectedUsers, u]);
+    }
+    setUserSearch('');
+    setUserSuggestions([]);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation />
-      
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -127,7 +135,6 @@ const InvitationsPage = () => {
             <div className="space-y-6">
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-6">Envoyer une invitation</h2>
-                
                 <form onSubmit={handleSendInvitation} className="space-y-4">
                   <div>
                     <Label htmlFor="tontine">Tontine</Label>
@@ -138,24 +145,39 @@ const InvitationsPage = () => {
                     >
                       {tontines.map((tontine) => (
                         <option key={tontine.id} value={tontine.id}>
-                          {tontine.name} ({tontine.spots} place{tontine.spots > 1 ? 's' : ''} disponible{tontine.spots > 1 ? 's' : ''})
+                          {tontine.name}
                         </option>
                       ))}
                     </select>
                   </div>
-
                   <div>
-                    <Label htmlFor="email">Email du destinataire</Label>
+                    <label htmlFor="userSearch">Pseudo du destinataire</label>
                     <Input
-                      id="email"
-                      type="email"
-                      value={inviteEmail}
-                      onChange={(e) => setInviteEmail(e.target.value)}
-                      placeholder="exemple@email.com"
-                      required
+                      id="userSearch"
+                      value={userSearch}
+                      onChange={e => setUserSearch(e.target.value)}
+                      placeholder="Tapez un pseudo"
+                      autoComplete="off"
                     />
+                    {userSuggestions.length > 0 && (
+                      <div className="border rounded bg-white shadow mt-1">
+                        {userSuggestions.map(u => (
+                          <div
+                            key={u.id}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+                            onClick={() => addUser(u)}
+                          >
+                            {u.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {selectedUsers.map(u => (
+                        <span key={u.id} className="bg-blue-100 px-2 py-1 rounded">{u.name}</span>
+                      ))}
+                    </div>
                   </div>
-
                   <div>
                     <Label htmlFor="message">Message personnalisé (optionnel)</Label>
                     <Textarea
@@ -166,14 +188,16 @@ const InvitationsPage = () => {
                       rows={3}
                     />
                   </div>
-
-                  <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-green-600">
+                  <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-blue-600 to-green-600"
+                    disabled={!invitationTontineId || tontines.length === 0}
+                  >
                     <Send className="h-4 w-4 mr-2" />
                     Envoyer l'invitation
                   </Button>
                 </form>
               </Card>
-
               {/* Quick Share */}
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Partage rapide</h3>
@@ -194,16 +218,16 @@ const InvitationsPage = () => {
                 </div>
               </Card>
             </div>
-
             {/* Invitation History */}
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-6">Invitations envoyées</h2>
-              
               <div className="space-y-4">
                 {sentInvitations.map((invitation) => (
                   <div key={invitation.id} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium">{invitation.email}</div>
+                      <div className="font-medium">
+                        {invitation.email || <span className="italic text-gray-400">Par lien</span>}
+                      </div>
                       <div className="flex items-center space-x-2">
                         {getStatusIcon(invitation.status)}
                         <span className="text-sm">{getStatusText(invitation.status)}</span>
@@ -239,7 +263,6 @@ const InvitationsPage = () => {
               </div>
             </Card>
           </div>
-
           {/* Tips */}
           <Card className="p-6 mt-8 bg-blue-50 border-blue-200">
             <h3 className="text-lg font-semibold mb-4 text-blue-900">Conseils pour de meilleures invitations</h3>

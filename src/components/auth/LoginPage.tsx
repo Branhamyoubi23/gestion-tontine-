@@ -10,18 +10,25 @@ const LoginPage = () => {
   const [phone, setphone] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
+    setError(null);
+
     try {
-      await login(phone, password);
+      const user = await login(phone, password);
+      if (!user || !user.id) {
+        setError('Identifiants invalides');
+        return;
+      }
+      localStorage.setItem('userId', user.id);
       navigate('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      setError(error.message || 'Erreur de connexion');
     } finally {
       setLoading(false);
     }
@@ -74,6 +81,10 @@ const LoginPage = () => {
               </div>
             </div>
           </div>
+
+          {error && (
+  <div className="mb-4 text-red-600 text-center font-medium">{error}</div>
+)}
 
           <div className="flex items-center justify-between">
             <div className="text-sm">

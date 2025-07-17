@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
@@ -12,10 +11,10 @@ import PaymentPage from '@/components/payment/PaymentPage';
 import NotificationsPage from '@/components/notifications/NotificationsPage';
 import LandingPage from '@/components/landing/LandingPage';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
-import HelpPage from '@/components/help/HelpPage';
-import SettingsPage from '@/components/settings/SettingsPage';
+
 import TransactionHistory from '@/components/history/TransactionHistory';
 import InvitationsPage from '@/components/invitations/InvitationsPage';
+import AdminPayments from '@/components/admin/AdminPayments';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -82,26 +81,14 @@ const AppRouter = () => {
           }
         />
         <Route
+          path="/paiement"
+          element={<PaymentPage />}
+        />
+        <Route
           path="/notifications"
           element={
             <ProtectedRoute>
               <NotificationsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/help"
-          element={
-            <ProtectedRoute>
-              <HelpPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <SettingsPage />
             </ProtectedRoute>
           }
         />
@@ -121,6 +108,7 @@ const AppRouter = () => {
             </ProtectedRoute>
           }
         />
+        <Route path="/admin/payments" element={<AdminPayments />} />
       </Routes>
     </div>
   );

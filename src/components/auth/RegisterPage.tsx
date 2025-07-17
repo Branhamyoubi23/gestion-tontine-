@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { Users, Mail, Lock, User, Phone } from 'lucide-react';
+
+function validatePassword(password: string) {
+  // Au moins 8 caractères, une minuscule, une majuscule, une lettre et un chiffre
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/.test(password);
+}
+
+function validateCameroonPhone(phone: string) {
+  // Format accepté : +2376XXXXXXXX ou 6XXXXXXXX
+  // Préfixes MTN/Orange courants : 65, 67, 68, 69, 655-659, 650-654, 690-699
+  const cleaned = phone.replace(/\s+/g, '').replace(/^(\+237)/, '');
+  return /^6(5[0-9]|7[0-9]|8[0-9]|9[0-9])[0-9]{6}$/.test(cleaned);
+}
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -17,30 +29,53 @@ const RegisterPage = () => {
     language: 'fr' as 'fr' | 'en'
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { register } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const invite = params.get('invite');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!validateCameroonPhone(formData.phone)) {
+      setError("Numéro de téléphone invalide. Utilisez un numéro MTN ou Orange Cameroun.");
+      return;
+    }
+
+    if (!validatePassword(formData.password)) {
+      setError("Le mot de passe doit contenir au moins 8 caractères, une minuscule, une majuscule, une lettre et un chiffre.");
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      alert('Les mots de passe ne correspondent pas');
+      setError('Les mots de passe ne correspondent pas');
       return;
     }
 
     setLoading(true);
-    
+    setError(null);
+
     try {
       await register({
         name: formData.name,
-        email: formData.email,
+        email: formData.email || undefined,
         phone: formData.phone,
         language: formData.language,
-        password: formData.password
+        password: formData.password,
+        invite
       });
       navigate('/onboarding');
-    } catch (error) {
-      console.error('Registration error:', error);
+    } catch (error: any) {
+      // Si l'API retourne une réponse JSON avec un message d'erreur
+      if (error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      } else if (error.message && error.message.includes('email')) {
+        setError("Cet email est déjà utilisé.");
+      } else {
+        setError("Erreur lors de l'inscription");
+      }
     } finally {
       setLoading(false);
     }
@@ -64,6 +99,7 @@ const RegisterPage = () => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
+          {error && <div className="text-red-600 mb-4">{error}</div>}
           <div className="space-y-4">
             <div>
               <Label htmlFor="name">Nom complet</Label>

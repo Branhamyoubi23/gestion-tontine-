@@ -1,34 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Navigation from '@/components/shared/Navigation';
-import { Plus, Users, Wallet, Clock, TrendingUp } from 'lucide-react';
+import { Plus, Users, Wallet, Trash2 } from 'lucide-react';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-
-  // Load tontines from localStorage
   const [tontines, setTontines] = useState([]);
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('tontines') || '[]');
-    setTontines(stored);
-  }, []);
-  
-  const stats = {
-    totalContributions: 3000,
-    activeTontines: tontines.filter(t => t.status === 'active').length,
-    nextReceiving: 4000,
-    completedRounds: 2
+    fetch(`http://localhost:3000/api/tontines?userId=${user.id}`)
+      .then(res => res.json())
+      .then(setTontines);
+  }, [user.id]);
+
+  const isAdmin = (tontine) => tontine.role === 'admin';
+
+  const handleDelete = async (id) => {
+    const confirm = window.confirm("Êtes-vous sûr de vouloir supprimer cette tontine ? Cette action est irréversible.");
+    if (!confirm) return;
+    await fetch(`http://localhost:3000/api/tontines/${id}`, { method: 'DELETE' });
+    setTontines(tontines.filter(t => t.id !== id));
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
       <Navigation />
-      
       <div className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -56,12 +56,14 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm text-gray-600">Solde total dans les tontines</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {
-                    tontines.reduce(
-                      (sum, t) => sum + (parseFloat(t.amount || 0) * (parseInt(t.maxMembers || 0) || 0)),
-                      0
-                    ).toLocaleString()
-                  } FCFA
+                  {tontines.reduce(
+                    (sum, t) =>
+                      sum +
+                      (parseFloat(t.amount || 0) *
+                        (parseInt(t.max_members || 0) || 0)),
+                    0
+                  ).toLocaleString()}{' '}
+                  CFA
                 </p>
               </div>
               <Wallet className="h-8 w-8 text-blue-600" />
@@ -91,8 +93,7 @@ const Dashboard = () => {
               {tontines.map((tontine) => (
                 <Card 
                   key={tontine.id} 
-                  className="p-6 cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => navigate(`/tontine/${tontine.id}`)}
+                  className="p-6 cursor-pointer hover:shadow-md transition-shadow relative"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <div>
@@ -103,19 +104,49 @@ const Dashboard = () => {
                         {tontine.description}
                       </p>
                     </div>
+                    {isAdmin(tontine) && (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="absolute top-2 right-2"
+                        onClick={e => {
+                          e.stopPropagation();
+                          handleDelete(tontine.id);
+                        }}
+                      >
+                        <Trash2 className="h-5 w-5 text-red-600" />
+                      </Button>
+                    )}
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-4 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-600">Montant</p>
+                      <p className="text-gray-600">Montant a cotisse</p>
                       <p className="font-semibold">{tontine.amount} CFA</p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Membres max</p>
-                      <p className="font-semibold">{tontine.maxMembers}</p>
+                      <p className="text-gray-600">Membres</p>
+                      <p className="font-semibold">
+                        {(tontine.memberCount || 0)}/{tontine.max_members}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-gray-600">Durée</p>
-                      <p className="font-semibold">{tontine.duration} mois</p>
+                      <p className="text-gray-600">Fréquence</p>
+                      <p className="font-semibold">
+                        {tontine.frequency === 'weekly'
+                          ? 'Hebdomadaire'
+                          : tontine.frequency === 'bimonthly'
+                          ? 'Bimensuelle'
+                          : 'Mensuelle'}
+                      </p>
+                    </div>
+                    <div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => navigate(`/tontine/${tontine.id}`)}
+                      >
+                        Détails tontine
+                      </Button>
                     </div>
                   </div>
                 </Card>
@@ -148,7 +179,7 @@ const Dashboard = () => {
                 <Button 
                   variant="outline" 
                   className="w-full justify-start"
-                  onClick={() => navigate('/profile')}
+                  onClick={() => navigate('/invitations')}
                 >
                   <Users className="h-4 w-4 mr-2" />
                   Inviter des amis

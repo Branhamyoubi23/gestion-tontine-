@@ -15,7 +15,7 @@ const LandingPage = () => {
           <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
             <Users className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">TontineHub</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Tontine Connect</h1>
         </div>
         <div className="space-x-4">
           <Button variant="ghost" onClick={() => navigate('/login')}>
@@ -41,9 +41,9 @@ const LandingPage = () => {
         </p>
         <div className="space-x-4">
           <Button size="lg" onClick={() => navigate('/register')}>
-            Commencer gratuitement
+            essai gratuit
           </Button>
-          <Button variant="outline" size="lg">
+          <Button variant="outline" size="lg"onClick={() => navigate('/onboarding')}>
             Découvrir comment ça marche
           </Button>
         </div>
@@ -52,7 +52,7 @@ const LandingPage = () => {
       {/* Features */}
       <section className="container mx-auto px-4 py-20">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-          Pourquoi choisir TontineHub ?
+          Pourquoi choisir Tontine Connect ?
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="text-center p-6 bg-white rounded-xl shadow-sm">
@@ -101,7 +101,7 @@ const LandingPage = () => {
             Prêt à commencer votre première tontine ?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Rejoignez des milliers d'utilisateurs qui font confiance à TontineHub
+            Rejoignez des milliers d'utilisateurs qui font confiance à Tontine connect
           </p>
           <Button size="lg" variant="secondary" onClick={() => navigate('/register')}>
             Créer mon compte gratuit

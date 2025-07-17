@@ -1,74 +1,41 @@
+import React, { createContext, useContext, useState } from 'react';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+const AuthContext = createContext(null);
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  phone: string;
-  language: 'fr' | 'en';
-  avatar?: string;
-}
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
 
-interface AuthContextType {
-  user: User | null;
-  loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: Omit<User, 'id'> & { password: string }) => Promise<void>;
-  logout: () => void;
-  updateProfile: (userData: Partial<User>) => void;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate checking for existing session
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  const login = async (phone, password) => {
+    const res = await fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Erreur de connexion');
     }
-    setLoading(false);
-  }, []);
-
-  const login = async (email: string, password: string) => {
-    // Simulate API call
-    const mockUser: User = {
-      id: '1',
-      email,
-      name: 'Marie Dubois',
-      phone: '+33 6 12 34 56 78',
-      language: 'fr',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b4e62940?w=150'
-    };
-    
-    setUser(mockUser);
-    localStorage.setItem('user', JSON.stringify(mockUser));
+    setUser(data);
+    localStorage.setItem('user', JSON.stringify(data));
+    return data;
   };
 
-  const register = async (userData: Omit<User, 'id'> & { password: string }) => {
-    // Simulate API call
-    const newUser: User = {
-      id: Date.now().toString(),
-      email: userData.email,
-      name: userData.name,
-      phone: userData.phone,
-      language: userData.language,
-    };
-    
-    setUser(newUser);
-    localStorage.setItem('user', JSON.stringify(newUser));
+  const register = async (userData) => {
+    const res = await fetch('http://localhost:3000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      // On lève l'erreur du backend pour l'afficher dans RegisterPage
+      throw new Error(data.error || 'Erreur lors de l\'inscription');
+    }
+    setUser(data);
+    localStorage.setItem('user', JSON.stringify(data));
   };
 
   const logout = () => {
@@ -76,24 +43,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('user');
   };
 
-  const updateProfile = (userData: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...userData };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{
-      user,
-      loading,
-      login,
-      register,
-      logout,
-      updateProfile
-    }}>
+    <AuthContext.Provider value={{ user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);
