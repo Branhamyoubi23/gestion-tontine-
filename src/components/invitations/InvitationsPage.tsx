@@ -23,6 +23,9 @@ const InvitationsPage = () => {
   const [userSearch, setUserSearch] = useState('');
   const [userSuggestions, setUserSuggestions] = useState<{id:number, name:string}[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<{id:number, name:string}[]>([]);
+  // Pour afficher le pseudo si user_id existe, il faut faire un mapping userId -> pseudo
+  // Ajoute un effet pour charger les users si des invitations ont un user_id
+  const [userIdToName, setUserIdToName] = useState<{[key:number]: string}>({});
 
   useEffect(() => {
     fetch(`http://localhost:3000/api/tontines?adminId=${user.id}`)
@@ -46,6 +49,21 @@ const InvitationsPage = () => {
     }
   }, [userSearch]);
 
+  useEffect(() => {
+    const userIds = sentInvitations.filter(i => i.user_id).map(i => i.user_id);
+    if (userIds.length > 0) {
+      Promise.all(userIds.map(id =>
+        fetch(`http://localhost:3000/api/users?search=${id}`)
+          .then(res => res.json())
+          .then(users => users[0]?.name ? { id, name: users[0].name } : null)
+      )).then(results => {
+        const mapping = {};
+        results.forEach(r => { if (r) mapping[r.id] = r.name; });
+        setUserIdToName(mapping);
+      });
+    }
+  }, [sentInvitations]);
+
   // Déclare ces variables UNE SEULE FOIS
   const invitationTontineId = selectedTontine || tontineIdFromUrl || (tontines[0]?.id ?? '');
   const invitationLink = `${window.location.origin}/register?invite=${invitationTontineId}`;
@@ -53,6 +71,18 @@ const InvitationsPage = () => {
   const handleSendInvitation = async (e: React.FormEvent) => {
     e.preventDefault();
     for (const member of selectedUsers) {
+      // Crée une invitation dans la table invitations
+      await fetch('http://localhost:3000/api/invitations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tontineId: invitationTontineId,
+          userId: member.id,
+          message: inviteMessage || `Vous avez été invité à rejoindre la tontine "${tontines.find(t => t.id == invitationTontineId)?.name}"`,
+          senderId: user.id,
+        }),
+      });
+      // Envoie aussi la notification (comme avant)
       await fetch('http://localhost:3000/api/notifications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,7 +99,18 @@ const InvitationsPage = () => {
     }
     setSelectedUsers([]);
     setInviteMessage('');
-    // Optionnel: afficher un message de succès
+    // Rafraîchir la liste après envoi
+    fetch(`http://localhost:3000/api/invitations?senderId=${user.id}`)
+      .then(res => res.json())
+      .then(setSentInvitations);
+  };
+
+  // Suppression d'une invitation
+  const handleDeleteInvitation = async (id) => {
+    await fetch(`http://localhost:3000/api/invitations/${id}`, { method: 'DELETE' });
+    fetch(`http://localhost:3000/api/invitations?senderId=${user.id}`)
+      .then(res => res.json())
+      .then(setSentInvitations);
   };
 
   const copyInviteLink = () => {
@@ -226,7 +267,11 @@ const InvitationsPage = () => {
                   <div key={invitation.id} className="p-4 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-medium">
-                        {invitation.email || <span className="italic text-gray-400">Par lien</span>}
+                        {invitation.email
+                          ? invitation.email
+                          : invitation.user_id && userIdToName[invitation.user_id]
+                            ? userIdToName[invitation.user_id]
+                            : <span className="italic text-gray-400">Par pseudo</span>}
                       </div>
                       <div className="flex items-center space-x-2">
                         {getStatusIcon(invitation.status)}
@@ -246,18 +291,17 @@ const InvitationsPage = () => {
                         <div className="text-red-600">Refusée le {invitation.declinedDate}</div>
                       )}
                     </div>
-                    {invitation.status === 'pending' && (
-                      <div className="flex space-x-2 mt-3">
-                        <Button size="sm" variant="outline">
-                          <Mail className="h-3 w-3 mr-1" />
-                          Relancer
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <X className="h-3 w-3 mr-1" />
-                          Annuler
-                        </Button>
-                      </div>
-                    )}
+                    {/* Boutons d'action */}
+                    <div className="flex space-x-2 mt-3">
+                      <Button size="sm" variant="outline">
+                        <Mail className="h-3 w-3 mr-1" />
+                        Relancer
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDeleteInvitation(invitation.id)}>
+                        <X className="h-3 w-3 mr-1" />
+                        Annuler
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>

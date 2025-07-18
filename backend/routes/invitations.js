@@ -4,11 +4,11 @@ const db = require('../db');
 
 // Créer une invitation
 router.post('/', async (req, res) => {
-  const { tontineId, email, message, senderId } = req.body;
+  const { tontineId, email, userId, message, senderId } = req.body;
   try {
     await db.execute(
-      'INSERT INTO invitations (tontine_id, email, message, sender_id, status) VALUES (?, ?, ?, ?, ?)',
-      [tontineId, email || null, message, senderId, 'pending']
+      'INSERT INTO invitations (tontine_id, email, user_id, message, sender_id, status) VALUES (?, ?, ?, ?, ?, ?)',
+      [tontineId, email || null, userId || null, message, senderId, 'pending']
     );
     res.status(201).json({ success: true });
   } catch (err) {
@@ -25,6 +25,13 @@ router.get('/', async (req, res) => {
     [senderId]
   );
   res.json(rows);
+});
+
+// Supprimer une invitation
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  await db.execute('DELETE FROM invitations WHERE id = ?', [id]);
+  res.json({ success: true });
 });
 
 const handleCreateLinkInvitation = async () => {

@@ -41,7 +41,7 @@ const Dashboard = () => {
         </div>
 
         {/* Custom Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
           <Card className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -157,7 +157,7 @@ const Dashboard = () => {
           {/* Quick Actions & Recent Activity */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Actions rapides</h3>
               <div className="space-y-3">
                 <Button 
@@ -188,7 +188,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Recent Activity */}
-            <Card className="p-6">
+            <Card className="p-3 sm:p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Activité récente</h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3">

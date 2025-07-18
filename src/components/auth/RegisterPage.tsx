@@ -8,8 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Users, Mail, Lock, User, Phone } from 'lucide-react';
 
 function validatePassword(password: string) {
-  // Au moins 8 caractères, une minuscule, une majuscule, une lettre et un chiffre
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/.test(password);
+  // Au moins 8 caractères, une majuscule, une minuscule, un chiffre, un caractère spécial
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/.test(password);
 }
 
 function validateCameroonPhone(phone: string) {
@@ -45,7 +45,7 @@ const RegisterPage = () => {
     }
 
     if (!validatePassword(formData.password)) {
-      setError("Le mot de passe doit contenir au moins 8 caractères, une minuscule, une majuscule, une lettre et un chiffre.");
+      setError('Le mot de passe doit contenir au moins 8 caractères, une minuscule, une majuscule, un chiffre et un caractère spécial.');
       return;
     }
 
@@ -170,11 +170,12 @@ const RegisterPage = () => {
                   type="password"
                   value={formData.password}
                   onChange={(e) => updateFormData('password', e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Mot de passe"
                   className="pl-10"
                   required
                 />
                 <Lock className="h-5 w-5 text-gray-400 absolute left-3 top-3" />
+                <small className="text-gray-500">Au moins 8 caractères, une majuscule, une minuscule, un chiffre, un caractère spécial.</small>
               </div>
             </div>
 
