@@ -1,1 +1,31 @@
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Vite & caches
+.vite/
+.cache/
+.eslintcache
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Coverage
+coverage/
 node_modules

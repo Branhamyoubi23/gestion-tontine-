@@ -1,92 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Couleurs de base pour Tailwind (format HSL sans le wrapper hsl()) */
+    --background: 40 40% 95%;
+    /* #F7F4EF */
+    --foreground: 33 24% 10%;
+    /* #1A1208 */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 33 24% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 33 24% 10%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 34 65% 47%;
+    /* #C8862A */
+    --primary-foreground: 40 40% 95%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 40 60% 87%;
+    /* #F5E6C8 */
+    --secondary-foreground: 34 80% 30%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 33 13% 43%;
+    /* #7A6E5F */
+    --muted-foreground: 33 13% 43%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 40 60% 87%;
+    --accent-foreground: 34 65% 47%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 39 21% 82%;
+    /* #DDD5C4 */
+    --input: 39 21% 82%;
+    --ring: 34 65% 47%;
 
-    --radius: 0.5rem;
+    --radius: 1.5rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Nos variables personnalisées d'origine */
+    --bg: #F7F4EF;
+    --ink: #1A1208;
+    --gold: #C8862A;
+    --gold-light: #F5E6C8;
+    --gold-dark: #8B5A10;
+    --cream: #EDE8DE;
+    --surface-dark: #1A1208;
+    --text-dark: #F7F4EF;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
+    --gold-gradient: linear-gradient(135deg, #C8862A 0%, #E8A040 100%);
 
-    --sidebar-primary: 240 5.9% 10%;
+    --font-serif: 'Fraunces', serif;
+    --font-sans: 'Cabinet Grotesk', sans-serif;
+    --font-mono: 'Space Mono', monospace;
 
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.05);
+    --shadow-gold: 0 4px 20px rgba(200, 134, 42, 0.15);
   }
 }
 
@@ -96,6 +69,136 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    background-image: url("https://www.transparenttextures.com/patterns/felt.png");
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .title-font {
+    @apply font-serif font-black leading-tight;
+  }
+
+  i,
+  em {
+    @apply font-serif italic not-italic;
+    font-style: italic !important;
+  }
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  /* Texture papier subtile */
+  background-image: url("https://www.transparenttextures.com/patterns/felt.png");
+}
+
+h1,
+h2,
+h3,
+h4,
+.title-font {
+  font-family: var(--font-serif);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+i,
+em {
+  font-family: var(--font-serif);
+  font-style: italic !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.2s ease;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Utilitaires Premium */
+
+.btn-primary {
+  background: var(--gold-gradient);
+  color: white;
+  padding: 12px 32px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: var(--shadow-gold);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(200, 134, 42, 0.25);
+}
+
+.card {
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--cream);
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.radial-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(200, 134, 42, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+
+.font-outfit {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
 }

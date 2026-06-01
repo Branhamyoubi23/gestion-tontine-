@@ -1,4 +1,5 @@
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <Index />
+        <ToastContainer/>
       </TooltipProvider>
     </BrowserRouter>
   </QueryClientProvider>
