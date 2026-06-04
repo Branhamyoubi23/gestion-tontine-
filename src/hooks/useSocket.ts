@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify';
+import { SOCKET_BASE_URL } from '../config/env';
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = SOCKET_BASE_URL;
 
 let socketInstance: Socket | null = null;
 

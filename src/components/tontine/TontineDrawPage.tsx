@@ -11,6 +11,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { io } from 'socket.io-client';
+import { SOCKET_BASE_URL } from '../../config/env';
 
 type Member = {
   id: number;
@@ -82,7 +83,7 @@ const TontineDrawPage = () => {
     fetchAll();
 
     // Real-time updates
-    const socket = io('http://localhost:5000');
+    const socket = io(SOCKET_BASE_URL);
     socket.on('position_taken', () => fetchAll());
     socket.on('draw_opened', () => fetchAll());
     socket.on('draw_completed', (data: any) => {

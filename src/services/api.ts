@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config/env';
 
-const API_URL = 'http://localhost:5000/api'
+const API_URL = API_BASE_URL;
 
 // Create axios instance with default config
 const api = axios.create({
