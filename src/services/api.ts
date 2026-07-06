@@ -580,6 +580,16 @@ export const bankService = {
   getProfitHistory: async (tontineId: string) => {
     const res = await api.get(`/bank/${tontineId}/profit-history`);
     return res.data;
+  },
+  // New status endpoint used by frontend BankComponent
+  getBankStatus: async (tontineId: string) => {
+    const res = await api.get(`/bank/${tontineId}/status`);
+    return res.data;
+  },
+  // Member contribution (deposit)
+  contribute: async (tontineId: string | number, amount: number) => {
+    const res = await api.post(`/bank/${tontineId}/contribute`, { amount });
+    return res.data;
   }
 };
 

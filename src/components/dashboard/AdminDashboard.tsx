@@ -479,7 +479,7 @@ const MembersManagement = ({ tontine }: { tontine: any }) => {
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
         <div>
            <div className="flex items-center gap-3">
-             <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight italic">Membres & Habilitations</h2>
+             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight italic">Membres & Habilitations</h2>
              <button 
                onClick={() => loadMembers(false)}
                aria-label="Recharger les membres"
@@ -1401,7 +1401,7 @@ const AdminDashboard = () => {
       </div>
       
       {/* Main Content Pane */}
-      <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-24' : 'lg:ml-72'} p-6 md:p-12 min-h-screen relative`}>
+      <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'lg:ml-24' : 'lg:ml-72'} p-4 sm:p-6 md:p-12 min-h-screen relative`}>
         {loading && activeSection !== 'overview' ? (
           <DashboardSkeleton />
         ) : error && activeSection !== 'overview' ? (

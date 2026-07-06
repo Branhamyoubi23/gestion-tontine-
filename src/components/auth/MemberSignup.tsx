@@ -27,7 +27,7 @@ const MemberSignup = () => {
   const handleActivationRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.phone.length !== 9) return toast.error("Téléphone à 9 chiffres requis");
-    if (!formData.join_code.includes('TONT-')) return toast.error("Code Tontine invalide (ex: TONT-XXXX)");
+    if (formData.join_code.length < 5) return toast.error("Code Tontine invalide (trop court)");
 
     setLoading(true);
     try {

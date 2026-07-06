@@ -146,12 +146,12 @@ const LandingPortal = () => {
         </motion.div>
         
         {/* Hero Title & Description */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 sm:mb-16 px-4">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.4 }}
-            className="text-3xl sm:text-5xl md:text-7xl font-serif font-black text-slate-900 dark:text-white mb-6 tracking-tight"
+            className="text-4xl sm:text-5xl md:text-7xl font-serif font-black text-slate-900 dark:text-white mb-6 tracking-tight leading-tight sm:leading-none"
           >
             {TRANSLATIONS.titlePart1}
             <span className="text-blue-600">{TRANSLATIONS.titlePart2}</span>
@@ -268,18 +268,18 @@ const LandingPortal = () => {
         </div>
 
         {/* Feature Highlights/Stats Section */}
-        <div className="mt-12 w-full max-w-4xl grid grid-cols-3 gap-2 sm:gap-4 border border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md py-6 rounded-[32px] shadow-sm text-center">
-          <div>
-            <p className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">{TRANSLATIONS.statsTontinesCount}</p>
-            <p className="text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-0.5">{TRANSLATIONS.statsTontinesLabel}</p>
+        <div className="mt-12 w-full max-w-4xl grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4 border border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-800/50 backdrop-blur-md py-8 sm:py-6 rounded-[32px] shadow-sm text-center">
+          <div className="px-4">
+            <p className="text-3xl md:text-2xl font-black text-slate-900 dark:text-white">{TRANSLATIONS.statsTontinesCount}</p>
+            <p className="text-[10px] sm:text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-1 sm:mt-0.5">{TRANSLATIONS.statsTontinesLabel}</p>
           </div>
-          <div className="border-x border-slate-100 dark:border-slate-800">
-            <p className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">{TRANSLATIONS.statsMembersCount}</p>
-            <p className="text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-0.5">{TRANSLATIONS.statsMembersLabel}</p>
+          <div className="border-y sm:border-y-0 sm:border-x border-slate-100 dark:border-slate-800 py-6 sm:py-0 px-4">
+            <p className="text-3xl md:text-2xl font-black text-slate-900 dark:text-white">{TRANSLATIONS.statsMembersCount}</p>
+            <p className="text-[10px] sm:text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-1 sm:mt-0.5">{TRANSLATIONS.statsMembersLabel}</p>
           </div>
-          <div>
-            <p className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">{TRANSLATIONS.statsSecureCount}</p>
-            <p className="text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-0.5">{TRANSLATIONS.statsSecureLabel}</p>
+          <div className="px-4">
+            <p className="text-3xl md:text-2xl font-black text-slate-900 dark:text-white">{TRANSLATIONS.statsSecureCount}</p>
+            <p className="text-[10px] sm:text-[9px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-1 sm:mt-0.5">{TRANSLATIONS.statsSecureLabel}</p>
           </div>
         </div>
 
